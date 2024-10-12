@@ -2,12 +2,17 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
 
+
+macro_rules! cmp {
+    ($x: ident, $y: ident) => {
+        *($x as *const T as usize as *const i32) < *($y as *const T as usize as *const i32)
+    };
+}
 #[derive(Debug)]
 struct Node<T> {
     val: T,
@@ -29,13 +34,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T:Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T:Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -69,14 +74,37 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	pub fn merge(mut list_a:LinkedList<T>, mut list_b:LinkedList<T>) -> Self
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        if list_a.length == 0 {
+            return list_b;
         }
+        if list_b.length == 0 {
+            return list_a;
+        }
+		let mut result = LinkedList::new();
+        let mut i1 = 0;
+        let mut i2 = 0;
+        while i1 < list_a.length && i2 < list_b.length {
+            let v1 = list_a.get(i1.try_into().unwrap()).unwrap();
+            let v2 = list_b.get(i2.try_into().unwrap()).unwrap();
+            if unsafe {cmp!(v1, v2)} {
+                result.add(v1.clone());
+                i1 += 1;
+            } else {
+                result.add(v2.clone());
+                i2 += 1;
+            }
+        }
+        while i1 < list_a.length {
+            result.add(list_a.get(i1.try_into().unwrap()).unwrap().clone());
+            i1 += 1;
+        }
+        while i2 < list_b.length {
+            result.add(list_b.get(i2.try_into().unwrap()).unwrap().clone());
+            i2 += 1;
+        }
+        result
 	}
 }
 
