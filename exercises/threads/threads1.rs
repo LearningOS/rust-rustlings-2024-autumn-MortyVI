@@ -17,7 +17,7 @@ fn main() {
     for i in 0..10 {
         handles.push(thread::spawn(move || {
             let start = Instant::now();
-            thread::sleep(Duration::from_millis(4000));
+            thread::sleep(Duration::from_millis(250));
             println!("thread {} is complete {}", i, SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis());
             start.elapsed().as_millis()
         }));

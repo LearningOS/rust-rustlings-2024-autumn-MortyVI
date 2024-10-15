@@ -22,7 +22,7 @@ fn main() {
     for _ in 0..10 {
         let status_shared = Arc::clone(&status);
         let handle = thread::spawn(move || {
-            thread::sleep(Duration::from_millis(2500));
+            thread::sleep(Duration::from_millis(250));
             let mut data = status_shared.lock().unwrap(); 
             data.jobs_completed += 1;
         });
